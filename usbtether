@@ -1,0 +1,38 @@
+#! /bin/bash
+
+LIGHT=/sys/class/leds/led0/brightness
+
+blink () {
+  up=${1:-0.1}
+  dn=${2:-0.1}
+  n=${3:-1}
+
+  while (test $n -ne 0)
+  do
+    echo 1 > $LIGHT
+    sleep $up
+    echo 0 > $LIGHT
+    sleep $dn
+    let n=$n-1
+  done
+}
+
+{
+while true; do
+
+  POLL=1
+  while [ 0 -ne $POLL ]; do
+    echo '?'
+    date
+    ifconfig -a | grep usb > /dev/null
+    POLL=$?
+    blink 0.01 0.01 1
+    sleep 1
+  done
+  
+  echo '!'
+  blink 0.01 0.05 3
+  dhcpcd usb0 -B
+  blink 0.01 0.01 20 
+done
+} &> /root/usb.log

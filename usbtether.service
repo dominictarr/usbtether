@@ -1,0 +1,12 @@
+[Unit]
+Description=tether to usb automatically
+After=syslog.target network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/usbtether
+
+[Install]
+WantedBy=multi-user.target
+
+
